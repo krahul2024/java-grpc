@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "com.math";
+option java_multiple_files = true;
+option go_package = "core/protobuf";
+
+package math;
+
+message NumberRequest {
+  int32 number = 1;
+}
+
+message NumberReply {
+  int64 number = 1;
+}
+
+service MathService {
+  rpc Sqr  (NumberRequest) returns (NumberReply);
+  rpc Fact (NumberRequest) returns (NumberReply);
+  rpc Fib  (NumberRequest) returns (NumberReply);
+}
