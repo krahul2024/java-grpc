@@ -122,8 +122,8 @@ const file_math_proto_rawDesc = "" +
 	"\vMathService\x12-\n" +
 	"\x03Sqr\x12\x13.math.NumberRequest\x1a\x11.math.NumberReply\x12.\n" +
 	"\x04Fact\x12\x13.math.NumberRequest\x1a\x11.math.NumberReply\x12-\n" +
-	"\x03Fib\x12\x13.math.NumberRequest\x1a\x11.math.NumberReplyB\x1b\n" +
-	"\bcom.mathP\x01Z\rcore/protobufb\x06proto3"
+	"\x03Fib\x12\x13.math.NumberRequest\x1a\x11.math.NumberReplyB\x17\n" +
+	"\bcom.mathP\x01Z\t/protobufb\x06proto3"
 
 var (
 	file_math_proto_rawDescOnce sync.Once
