@@ -7,15 +7,50 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 const (
 	serverAddr = "localhost:50051"
 )
 
+var HttpMsg = struct {
+	InternalServerError string
+	BadRequest          string
+	NotFound            string
+	Conflict            string
+	PreconditionFailed  string
+	Unauthorized        string
+	Forbidden           string
+	ServiceUnavailable  string
+	GatewayTimeout      string
+}{
+	InternalServerError: "Internal server error",
+	BadRequest:          "Bad request",
+	NotFound:            "Not found",
+	Conflict:            "Conflict",
+	PreconditionFailed:  "Precondition failed",
+	Unauthorized:        "Unauthorized",
+	Forbidden:           "Forbidden",
+	ServiceUnavailable:  "Service unavailable",
+	GatewayTimeout:      "Service timeout",
+}
+
 var client protobuf.MathServiceClient
+var grpcToHTTP = map[codes.Code]int{
+	codes.InvalidArgument:    http.StatusBadRequest,
+	codes.NotFound:           http.StatusNotFound,
+	codes.AlreadyExists:      http.StatusConflict,
+	codes.FailedPrecondition: http.StatusPreconditionFailed,
+	codes.DeadlineExceeded:   http.StatusGatewayTimeout,
+	codes.Unavailable:        http.StatusServiceUnavailable,
+	codes.Unauthenticated:    http.StatusUnauthorized,
+	codes.PermissionDenied:   http.StatusForbidden,
+}
 
 func initGrpcClient() *grpc.ClientConn {
 	conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -75,11 +110,28 @@ func factHandler(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("Got request: factHandler; number = %d\n", reqBody.Number);
 
-		res, err := client.Fact(context.Background(), &protobuf.NumberRequest{Number: reqBody.Number})
+		// TODO: use ctx = context.Background() and then defer, pass this ctx
+		res, err := client.Fact(context.Background(), &protobuf.NumberRequest{
+			Number: reqBody.Number,
+		})
+
 		if err != nil {
-			http.Error(w, "Error calling gRPC service", http.StatusInternalServerError)
+			st, ok := status.FromError(err)
+			if !ok {
+				http.Error(w, HttpMsg.InternalServerError, http.StatusInternalServerError)
+				return
+			}
+
+			msg := st.Message()
+			code, ok := grpcToHTTP[st.Code()]
+			if !ok {
+				msg, code = HttpMsg.InternalServerError, http.StatusInternalServerError
+			}
+
+			http.Error(w, msg, code)
 			return
 		}
+
 		fmt.Fprintf(w, "Factorial result: %d\n", res.GetNumber())
 	}
 }
@@ -97,9 +149,23 @@ func fibHandler(w http.ResponseWriter, r *http.Request) {
 
 		res, err := client.Fib(context.Background(), &protobuf.NumberRequest{Number: reqBody.Number})
 		if err != nil {
-			http.Error(w, "Error calling gRPC service", http.StatusInternalServerError)
+			st, ok := status.FromError(err)
+			if !ok {
+				http.Error (w, HttpMsg.InternalServerError, http.StatusInternalServerError)
+				return
+			}
+
+			msg := st.Message()
+			code, ok := grpcToHTTP[st.Code()]
+
+			if !ok {
+				msg, code = HttpMsg.InternalServerError, http.StatusInternalServerError
+			}
+
+			http.Error(w, msg, code)
 			return
 		}
+
 		fmt.Fprintf(w, "Fib result: %d\n", res.GetNumber())
 	}
 }

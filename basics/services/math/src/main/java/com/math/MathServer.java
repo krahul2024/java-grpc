@@ -2,6 +2,7 @@ package com.math;
 
 import io.grpc.ServerBuilder;
 import io.grpc.Server;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class MathServer {
@@ -35,6 +36,17 @@ class MathServiceImpl extends MathServiceGrpc.MathServiceImplBase {
     @Override
     public void fib(NumberRequest req, StreamObserver<NumberReply> res) {
         int number = req.getNumber();
+
+        if (number < 0) {
+            res.onError(
+                Status.INVALID_ARGUMENT
+                .withDescription("number must be >= 0")
+                .asRuntimeException()
+            );
+
+            return;
+        }
+
         long result = MathMethods.fib(number);
         NumberReply reply = NumberReply.newBuilder().setNumber(result).build();
         res.onNext(reply);
@@ -44,6 +56,16 @@ class MathServiceImpl extends MathServiceGrpc.MathServiceImplBase {
     @Override
     public void fact(NumberRequest req, StreamObserver<NumberReply> res) {
         int n = req.getNumber();
+        if (n < 0) {
+            res.onError(
+                Status.INVALID_ARGUMENT
+                .withDescription("number must be > 0")
+                .asRuntimeException()
+            );
+
+            return;
+        }
+
         long result = MathMethods.factorial(n);
         NumberReply nr = NumberReply.newBuilder().setNumber(result).build();
         res.onNext(nr);
