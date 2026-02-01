@@ -29,16 +29,16 @@ var HttpMsg = struct {
 	ServiceUnavailable  string
 	GatewayTimeout      string
 }{
-	InternalServerError: "Internal server error",
-	BadRequest:          "Bad request",
-	NotFound:            "Not found",
-	Conflict:            "Conflict",
-	PreconditionFailed:  "Precondition failed",
-	Unauthorized:        "Unauthorized",
-	Forbidden:           "Forbidden",
-	ServiceUnavailable:  "Service unavailable",
-	GatewayTimeout:      "Service timeout",
-}
+		InternalServerError: "Internal server error",
+		BadRequest:          "Bad request",
+		NotFound:            "Not found",
+		Conflict:            "Conflict",
+		PreconditionFailed:  "Precondition failed",
+		Unauthorized:        "Unauthorized",
+		Forbidden:           "Forbidden",
+		ServiceUnavailable:  "Service unavailable",
+		GatewayTimeout:      "Service timeout",
+	}
 
 var client protobuf.MathServiceClient
 var grpcToHTTP = map[codes.Code]int{
@@ -65,11 +65,11 @@ func main() {
 	PORT := 3000
 	conn := initGrpcClient()
 	defer conn.Close()
-	
+
 	http.HandleFunc("/sqr", sqrHandler)
 	http.HandleFunc("/fact", factHandler)
 	http.HandleFunc("/fib", fibHandler)
-	
+
 	log.Println("Server is running at localhost:", PORT)
 	if err := http.ListenAndServe(fmt.Sprintf(":%v", PORT), nil); err != nil {
 		log.Fatalf("Error starting the server, %v", err)
