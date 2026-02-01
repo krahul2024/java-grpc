@@ -8,7 +8,6 @@ import java.util.Properties;
 
 public class App {
     public static void main(String[] args) {
-        connect();
     }
 
     static void connect() {
