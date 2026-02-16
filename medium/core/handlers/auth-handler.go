@@ -18,7 +18,6 @@ var Auth = AuthHandler {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("from login")
 }
 
 func register(w http.ResponseWriter, r *http.Request) {

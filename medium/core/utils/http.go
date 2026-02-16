@@ -39,6 +39,7 @@ func WithMethod(method string, h http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, HttpMsg.MethodNotAllowed, http.StatusMethodNotAllowed)
 			return
 		}
+
 		h(w, r)
 	}
 }
