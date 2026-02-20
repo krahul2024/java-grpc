@@ -7,9 +7,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type AuthHandler struct {
@@ -52,18 +49,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 		)
 
 	if err != nil {
-		if status.Code(err) == codes.Unauthenticated {
-			http.Error (w, utils.HttpMsg.InvalidCredentials, http.StatusUnauthorized)
-			return
-		}
-
-		http.Error(w, utils.HttpMsg.InternalServerError, http.StatusInternalServerError)
+		utils.HandleGrpcError(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+
+	utils.WriteRespFromMap(w, map[string]interface{}{
 		"token": res.GetToken(),
 		"validUpto": res.GetValidUpto().AsTime(),
 	})

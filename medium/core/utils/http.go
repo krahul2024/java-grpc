@@ -123,3 +123,8 @@ func truncate(s string, maxLen int) string {
 	}
 	return s[:maxLen] + "..."
 }
+
+// Response methods
+func WriteRespFromMap (w http.ResponseWriter, values map[string]interface{}) {
+	json.NewEncoder(w).Encode(values)
+}
