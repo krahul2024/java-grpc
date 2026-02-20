@@ -6,11 +6,22 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 const (
-	PORT = 4000
+	PORT           = 4000
+	grpcServerAddr = 50051
 )
+
+var GrpClient protobuf.
+
+
+
 
 func main() {
 

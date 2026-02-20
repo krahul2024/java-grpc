@@ -1,0 +1,93 @@
+# Generated protobuf files
+core/grpc/*.pb.go
+services/auth/src/main/java/com/auth/grpc/
+
+# Go
+core/grpc/
+*.pb.go
+*.pb.gw.go
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/core/main
+
+# Go dependency directories
+/core/vendor/
+
+# Go workspace file
+go.work
+
+# Java/Maven
+services/auth/target/
+services/auth/.classpath
+services/auth/.project
+services/auth/.settings/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Maven specific
+**/target/
+**/dependency-reduced-pom.xml
+**/.mvn/timing.properties
+**/.mvn/wrapper/maven-wrapper.jar
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+
+# IDE - Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
