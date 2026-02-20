@@ -13,7 +13,7 @@ echo -e "${BLUE}  Starting Proto Generation Process${NC}"
 echo ""
 
 # Define paths
-GO_GRPC_DIR="core/grpc"
+GO_GRPC_DIR="core/protobuf"
 JAVA_GRPC_DIR="services/auth/src/main/java/com/auth/grpc"
 JAVA_AUTH_DIR="services/auth"
 

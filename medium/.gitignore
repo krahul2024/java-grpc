@@ -4,6 +4,7 @@ services/auth/src/main/java/com/auth/grpc/
 
 # Go
 core/grpc/
+core/protobuf/
 *.pb.go
 *.pb.gw.go
 

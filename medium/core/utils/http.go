@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	TimeOutSeconds = 2
+)
+
 var HttpMsg = struct {
 	InternalServerError string
 	BadRequest          string
@@ -19,7 +23,8 @@ var HttpMsg = struct {
 	Forbidden           string
 	ServiceUnavailable  string
 	GatewayTimeout      string
-	MethodNotAllowed      string
+	MethodNotAllowed    string
+	InvalidCredentials  string
 }{
 		InternalServerError: "Internal server error",
 		BadRequest:          "Bad request",
@@ -31,6 +36,7 @@ var HttpMsg = struct {
 		ServiceUnavailable:  "Service unavailable",
 		GatewayTimeout:      "Service timeout",
 		MethodNotAllowed:    "Method Not Allowed",
+		InvalidCredentials:  "Invalid Credentials",
 	}
 
 func WithMethod(method string, h http.HandlerFunc) http.HandlerFunc {
