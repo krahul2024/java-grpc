@@ -35,6 +35,16 @@ class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
     public void login(LoginRequest loginReq, StreamObserver<LoginReply> loginRes) {
         String userName = loginReq.getUserName();
         String password = loginReq.getPassword();
+        if (password.length() < 8) {
+            loginRes.onError(
+                Status.UNAUTHENTICATED
+                .withDescription("Password too short, length should be atleast 8")
+                .asRuntimeException()
+            );
+
+            return;
+        }
+
         Instant now     = Instant.now();
 
         //NOTE: java follows this builder pattern apparently

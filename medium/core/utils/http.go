@@ -13,6 +13,11 @@ const (
 	TimeOutSeconds = 2
 )
 
+type ErrorResponse struct {
+	Error   string `json:"error"`
+	Code    int    `json:"code"`
+}
+
 var HttpMsg = struct {
 	InternalServerError string
 	BadRequest          string
@@ -38,6 +43,14 @@ var HttpMsg = struct {
 		MethodNotAllowed:    "Method Not Allowed",
 		InvalidCredentials:  "Invalid Credentials",
 	}
+
+
+func BuildErrorRespMsg (err error, code int) ErrorResponse {
+	return ErrorResponse{
+		Error: err.Error(),
+		Code: code,
+	}
+}
 
 func WithMethod(method string, h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -127,4 +140,10 @@ func truncate(s string, maxLen int) string {
 // Response methods
 func WriteRespFromMap (w http.ResponseWriter, values map[string]interface{}) {
 	json.NewEncoder(w).Encode(values)
+}
+
+func WriteErrorJSON (w http.ResponseWriter, err error, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(BuildErrorRespMsg(err, code))
 }

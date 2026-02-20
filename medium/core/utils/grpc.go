@@ -2,6 +2,7 @@ package utils
 
 import (
 	"core/protobuf"
+	"errors"
 	"net/http"
 
 	"google.golang.org/grpc/codes"
@@ -33,17 +34,14 @@ var GrpcToHTTP = map[codes.Code]int{
 func HandleGrpcError(w http.ResponseWriter, err error) {
 	st, ok := status.FromError(err)
 	if !ok {
-		http.Error(w, HttpMsg.InternalServerError, http.StatusInternalServerError)
+		WriteErrorJSON(w, errors.New(HttpMsg.InternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	msg := st.Message()
-	
 	httpCode, ok := GrpcToHTTP[st.Code()]
 	if !ok {
-		msg = HttpMsg.InternalServerError
 		httpCode = http.StatusInternalServerError
 	}
 
-	http.Error(w, msg, httpCode)
+	WriteErrorJSON(w, errors.New(st.Message()), httpCode)
 }
