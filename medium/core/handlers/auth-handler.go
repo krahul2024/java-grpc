@@ -63,6 +63,40 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		UserName string `json:"userName"`
+		Name string `json:"name"`
+		Password string `json:"password"`
+	}
+
+	if err := parseRequestBody(r, &body); err != nil {
+		utils.WriteErrorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), utils.TimeOutSeconds * time.Second)
+	defer cancel()
+
+	res, err := utils.GrpClient.Register(
+		ctx,
+		&protobuf.RegisterRequest{
+			UserName: body.UserName,
+			Password: body.Password,
+			Name: body.Name,
+		},
+		)
+
+	if err != nil {
+		utils.HandleGrpcError(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+
+	utils.WriteRespFromMap (w, map[string]interface{}{
+		"success": res.GetSuccess(),
+	})
 }
 
 func logout (w http.ResponseWriter, r *http.Request) {

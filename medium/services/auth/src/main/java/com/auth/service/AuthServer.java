@@ -2,9 +2,13 @@ package com.auth.service;
 
 import java.time.Instant;
 
+import com.auth.entity.User;
 import com.auth.grpc.AuthServiceGrpc;
 import com.auth.grpc.LoginReply;
 import com.auth.grpc.LoginRequest;
+import com.auth.grpc.RegisterReply;
+import com.auth.grpc.RegisterRequest;
+import com.auth.repository.UserRepo;
 import com.google.protobuf.Timestamp;
 
 import io.grpc.Server;
@@ -21,7 +25,7 @@ public class AuthServer {
         server.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.err.println("Shutting down Auth server as jvm is shutting down...");
+            System.err.println("Shutting down Auth server...");
             server.shutdown();
             System.err.println("Auth server shut down...");
         }));
@@ -55,5 +59,24 @@ class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
 
         loginRes.onNext(logRep);
         loginRes.onCompleted();
+    }
+
+    @Override
+    public void register(RegisterRequest req, StreamObserver<RegisterReply> res) {
+        String name     = req.getName();
+        String userName = req.getUserName();
+        String password = req.getPassword();
+
+        if (password.length() < 8) {
+            res.onError(
+                Status.UNAUTHENTICATED
+                .withDescription("Password too short, length should be atleast 8")
+                .asRuntimeException()
+            );
+
+            return;
+        }
+
+        User user = new User(0, name , userName, password);
     }
 }
